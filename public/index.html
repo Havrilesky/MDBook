@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1.0"
+    />
+    <title>The Book</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Berkshire+Swash|Quicksand"
+      rel="stylesheet"
+    />
+    <!-- CSS  -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="css/materialize.css"
+      type="text/css"
+      rel="stylesheet"
+      media="screen,projection"
+    />
+    <link
+      href="css/style.css"
+      type="text/css"
+      rel="stylesheet"
+      media="screen,projection"
+    />
+    <link rel="stylesheet" href="css/bookstyles.css" />
+  </head>
+
+  <body>
+    <nav class="brown lighten-3" role="navigation">
+      <div class="nav-wrapper container">
+        <a id="logo-container" href="#" class="brand-logo">The Book</a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="#">There's nothing to see here</a></li>
+          <li><a href="#">Just go on about your business</a></li>
+        </ul>
+
+        <ul id="nav-mobile" class="sidenav">
+          <li><a href="#">There's nothing to see here</a></li>
+          <li><a href="#">Just go on about your business</a></li>
+        </ul>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger"
+          ><i class="material-icons">menu</i></a
+        >
+      </div>
+    </nav>
+
+    <h2 id="theDate" style="    text-align: center;">date goes here</h2>
+    <input
+      id="goDate"
+      type="text"
+      class="datepicker hide"
+      onSelect="goToDate(new Date(document.getElementById('goDate').value))"
+    />
+    <div style="margin: 1rem;">
+      <a
+        class="waves-effect waves-light btn  light-blue darken-2"
+        onclick="goToDate(new Date(lastDate.getTime() - oneDay))"
+        ><i class="material-icons left">fast_rewind</i>Prev Day</a
+      >
+      <a
+        class="waves-effect waves-light btn  light-blue darken-4"
+        onclick="openDatePicker()"
+        ><i class="material-icons left">calendar_today</i>Go Date</a
+      >
+      <a
+        class="waves-effect waves-light btn  light-blue darken-2"
+        onclick="goToDate(new Date(lastDate.getTime() + oneDay))"
+        >Next Day<i class="material-icons right">fast_forward</i></a
+      >
+    </div>
+
+    <div class="row">
+      <div class="col s12 m12" id="cardList">
+        <div class="card hide" id="writingItemTemplate">
+          <div class="card-image myGrad">
+            <img class="cardImg" src="testBG.png" />
+            <a
+              class="btn-floating halfway-fab  amber accent-3 waves-effect waves-light"
+              onclick="newWriting(this.parentNode.parentNode);"
+              ><i class="material-icons">add</i></a
+            >
+            <div class="selectPulldowns col s3 daytime" style="right:2rem;">
+              <select
+                class="browser-default"
+                id="temperature"
+                style="background-color: rgba(255, 255, 255, 0.0);
+							border: none;"
+                oninput="update(this.parentNode.parentNode.parentNode.id, 'Temperature', this.value)"
+              >
+                <option value=" Sweltering">Sweltering</option>
+                <option value="Hot">Hot</option>
+                <option value="Warm">Warm</option>
+                <option value="Comfortable">Comfortable</option>
+                <option value="Cool">Cool</option>
+                <option value="Chilly">Chilly</option>
+                <option value="Cold">Cold</option>
+                <option value="Freezing">Feezing</option>
+                <option value="Frigid">Frigid</option>
+              </select>
+            </div>
+            <div
+              class="selectPulldowns col s3 daytime"
+              style="top:7rem; right:2rem;"
+            >
+              <select
+                class="browser-default"
+                id="weather"
+                style="background-color: rgba(255, 255, 255, 0.0);
+							border: none;"
+                oninput="update(this.parentNode.parentNode.parentNode.id, 'Weather', this.value)"
+              >
+                <option value="Clear">Clear</option>
+                <option value="Scattered Clouds">Scattered Clouds</option>
+                <option value="Partly Cloudy">Partly Cloudy</option>
+                <option value="Mostly Cloudy">Mostly Cloudy</option>
+                <option value="Cloudy">Cloudy</option>
+                <option value="Overcast">Overcast</option>
+                <option value="Showers">Showers</option>
+                <option value="Rain">Rain</option>
+                <option value="Thunderstorms">Thunderstorms</option>
+                <option value="Snow Flurries">Snow Flurries</option>
+                <option value="Snow">Snow</option>
+                <option value="Sleet">Sleet</option>
+              </select>
+            </div>
+            <div
+              class="selectPulldowns col s3 daytime"
+              style="margin-left:2rem;"
+            >
+              <select
+                class="browser-default selectMod"
+                id="timeSelect"
+                style="background-color: rgba(255, 255, 255, 0.0);
+							border: none;"
+                oninput="update(this.parentNode.parentNode.parentNode.id, 'Time', this.value)"
+              >
+              </select>
+            </div>
+            <div
+              class=" selectPulldowns col s3 daytime"
+              style="margin-left:2rem; top:7rem;"
+            >
+              <select
+                class="browser-default"
+                id="authorSelect"
+                style="background-color: rgba(255, 255, 255, 0.0);
+							border: none;"
+                oninput="update(this.parentNode.parentNode.parentNode.id, 'Author', this.value)"
+              >
+              </select>
+            </div>
+            <div
+              class=" selectPulldowns col s3 daytime"
+              style="margin-left:2rem; top:12rem;"
+            >
+              <select
+                class="browser-default"
+                id="locationSelect"
+                style="background-color: rgba(255, 255, 255, 0.0);
+							border: none;"
+                oninput="update(this.parentNode.parentNode.parentNode.id, 'Location', this.value)"
+              >
+              </select>
+            </div>
+          </div>
+          <div
+            class=" sunMoon col s3"
+            style="    margin-left: 3.1rem; width: 10rem; height: 13rem; font-style: italic;"
+          >
+            <span class="row"> </span>
+            <span class="row Moonrise">moonrise 11:54am</span>
+            <span class="row Moonset">moonset 9:27pm</span>
+            <span class="row Sunrise">sunrise 5:29am</span>
+            <span class="row Sunset">sunset 6:05pm</span>
+          </div>
+          <div
+            class="card-content entryText"
+            id="textArea"
+            style="width: 95%; position: relative; min-height: 9rem;"
+            contenteditable="true"
+            oninput="update(this.parentNode.id, 'WritingContent', this.innerHTML, this)"
+          >
+            THIS IS THE TEMPLATE - IF YOU SEE THIS THERE's AN ERROR!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer
+      class="
+			 page-footer brown"
+    >
+      <div class="container">
+        <div class="row">
+          <div class="col l6 s12">
+            <h5 class="white-text">This has been "The Book"</h5>
+            <p class="grey-text text-lighten-4">
+              Nevermind, you sack of shit!
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright">
+        <div class="container">
+          Made by
+          <a class="orange-text text-lighten-3" href="http://materializecss.com"
+            >Havrilesky</a
+          >
+        </div>
+      </div>
+    </footer>
+
+    <!--  Scripts-->
+
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="js/materialize.js"></script>
+    <script src="js/init.js"></script>
+    <script src="thebook.js" type="text/javascript"></script>
+    <script>
+      $(document).ready(function() {
+        console.log("yo!");
+        //$('select').formSelect();
+        //var picker = $('.datepicker').datepicker();
+        //picker.setDate(new Date(2018, 8, 7), true);
+        //$('.datepicker').datepicker().setMinDate(new Date(2000, 1, 1));
+
+        function Cancel() {
+          if (!this.hasEvent) {
+            this.hasEvent = true;
+            console.log("Clicked on cancel btn:", this.cancelBtn);
+          }
+        }
+        function Done() {
+          if (!this.hasEvent) {
+            this.hasEvent = true;
+            console.log("Clicked on done btn:", this.doneBtn);
+            const PigPicker = document.querySelector(".datepicker");
+            goToDate(new Date(PigPicker.value));
+          }
+        }
+        $(".datepicker").datepicker({
+          format: "m/d/yyyy",
+          yearRange: 100,
+          onOpen: function(e) {
+            var that = this;
+            that.hasEvent = false;
+            this.cancelBtn.addEventListener("click", Cancel.bind(that));
+            this.doneBtn.addEventListener("click", Done.bind(that));
+          },
+          onClose: function(e) {
+            var that = this;
+            this.cancelBtn.removeEventListener("click", Cancel.bind(that));
+            this.doneBtn.removeEventListener("click", Done.bind(that));
+          }
+        });
+      });
+      //var instance = M.Datepicker.getInstance($(".datepicker"));
+      // instance.options.minDate = new Date(someDate);
+      /*
+      M.Datepicker.init(PigPicker, {
+        //minDate: "01/01/2000",
+        showClearBtn: true,
+        yearRange: 100
+        //onSelect: goToDate(new Date(PigPicker.value))
+	  });
+	  */
+    </script>
+  </body>
+</html>

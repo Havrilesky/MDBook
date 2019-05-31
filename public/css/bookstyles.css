@@ -1,0 +1,140 @@
+bookstyles.css body {
+  font-size: 1rem;
+  font-family: 'Quicksand', sans-serif;
+  color: #662e1c;
+  background-color: #ebdcb2;
+}
+
+.control {
+  font-family: 'Quicksand', sans-serif;
+  background-color: lightgrey;
+  margin: .2rem;
+}
+
+.inField {
+  background-color: #fff;
+}
+
+h3 {
+  font-family: 'Berkshire Swash', cursive;
+}
+
+.controlName {
+  font-family: 'Berkshire Swash', cursive;
+  font-size: 1rem;
+  display: inline-block;
+}
+
+.listContainer {
+  margin: .5rem;
+  width: 100%;
+}
+
+.flexContainer {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #fff;
+  border-bottom: 1px dashed #aaa;
+  min-height: 8.5rem;
+  margin-top: .5rem;
+  padding: .5rem;
+}
+
+.controlArea {
+  background-color: none;
+  width: 8rem;
+}
+
+.writingControl {
+  font-family: 'Quicksand', sans-serif;
+}
+
+.daytime {
+  background-color: #d0e1f9;
+  color: #000;
+}
+
+.twilight {
+  background-color: #4d648d;
+  color: #fff;
+}
+
+.night {
+  background-color: #283655;
+  color: #fff;
+}
+
+.writingArea * {
+  background-color: none;
+}
+
+.entryText {}
+
+
+.selectPulldowns {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  height: 3rem;
+  background-color: #aaa;
+  border-color: #000;
+  border-radius: .5rem;
+  border-width: 1px;
+  border-style: solid;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, .5) !important;
+  z-index: 1;
+
+}
+
+.myGrad {
+  background: linear-gradient(to top,
+      hsl(0, 0%, 100%) 0%,
+      hsla(0, 0%, 100%, 0) 100%) !important;
+  height: 15rem !important;
+  background-size: cover !important;
+}
+
+.myGrad:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  background: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.cardImg {
+  position: absolute !important;
+  display: block;
+  height: 15rem;
+  background-size: cover !important;
+  object-fit: cover !important;
+  object-position: 0% 0% !important;
+}
+
+#controlTemplate {
+  display: none;
+  position: relative;
+}
+
+#textTemplate {
+  display: none;
+  position: relative;
+}
+
+#writingItemTemplate {
+  /*display: none;*/
+  position: relative;
+}
+
+#addEntry {
+  position: relative;
+  right: 0;
+  bottom: 0;
+}
+
+#changeDate {
+  display: none;
+}
