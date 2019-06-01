@@ -766,25 +766,34 @@ function putWritings(writings) {
 function updateWritings(divToUpdate, updateData) {
   console.log("in updateWritings() with updateData...");
   console.dir(updateData);
-  var sortNoSort = updateData.Sort;
-  var actualData = updateData.Data;
-  var controlArea = divToUpdate.childNodes[1];
-  var textArea = divToUpdate.childNodes[3];
-  var updateDATE = new Date(updateData.Date);
-  controlArea.childNodes[1].value = updateDATE.getUTCHours(); //set the time control
-  SelectItemByValue(controlArea.childNodes[5], updateData.Author); //set the author control
-  SelectItemByValue(controlArea.childNodes[9], updateData.Location); //set the location control
-  textArea.childNodes[1].innerHTML = updateData.WritingContent; //set the writing content
-  SelectItemByValue(weatherSelect, updateData.Weather); //set Weather
-  SelectItemByValue(temperatureSelect, updateData.Temperature); //set Temp
-  setCurrentCursorPosition(textArea.childNodes[1], savedCursor);
+  //var sortNoSort = updateData.Sort;
+  //var actualData = updateData.Data;
 
-  if (sortNoSort) {
-    //console.log("SORT DIVS because updateData.Sort = "+sortNoSort);
-    //sortWritingDivs()
-  } else {
-    //console.log("NO SORT DIVS because updateData.Sort = "+sortNoSort);
-  }
+  var timeSelect = divToUpdate.childNodes[1].childNodes[9].childNodes[1];
+  var authorSelect = divToUpdate.childNodes[1].childNodes[11].childNodes[1];
+  var locationSelect = divToUpdate.childNodes[1].childNodes[13].childNodes[1];
+  var tempSelect = divToUpdate.childNodes[1].childNodes[5].childNodes[1];
+  var weatherSelect = divToUpdate.childNodes[1].childNodes[7].childNodes[1];
+
+  var textArea = divToUpdate.childNodes[5];
+  var updateDATE = new Date(updateData.Date);
+  console.dir(timeSelect.value);
+  console.dir(updateDATE.getUTCHours());
+  timeSelect.value = updateDATE.getUTCHours(); //set the time control
+  SelectItemByValue(authorSelect, updateData.Author); //set the author control
+  SelectItemByValue(locationSelect, updateData.Location); //set the location control
+  textArea.innerHTML = updateData.WritingContent; //set the writing content
+  SelectItemByValue(weatherSelect, updateData.Weather); //set Weather
+  SelectItemByValue(tempSelect, updateData.Temperature); //set Temp
+  setCurrentCursorPosition(textArea, savedCursor);
+  /*
+    if (sortNoSort) {
+      //console.log("SORT DIVS because updateData.Sort = "+sortNoSort);
+      //sortWritingDivs()
+    } else {
+      //console.log("NO SORT DIVS because updateData.Sort = "+sortNoSort);
+    }
+    */
   doMoonsAndSunsPerLocation();
 } //end updateWritings
 
