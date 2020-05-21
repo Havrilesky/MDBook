@@ -183,6 +183,26 @@ const locationsList = {
     Lat: 49.0,
     Lon: -67.0
   },
+  "Roswen": {
+    Lat: 48.3,
+    Lon: -69.3
+  },
+  "Wiclonde": {
+    Lat: 47.0,
+    Lon: -70.0
+  },
+  "Utwynn": {
+    Lat: 50.0,
+    Lon: -68.0
+  },
+  "Yorkon": {
+    Lat: 51.0,
+    Lon: -67.5
+  },
+  "Ormfal": {
+    Lat: 52.5,
+    Lon: -65.5
+  },
   "Vocia Brevis": {
     Lat: 40.0,
     Lon: -76.0
@@ -192,20 +212,28 @@ const locationsList = {
     Lon: -75.0
   },
   Test00: {
-    Lat: 0,
-    Lon: 0
+    Lat: 60.5,
+    Lon: -102
   }
 };
+
 const authorsList = {
   Kiedis: "Kiedis",
   Aurvan: "Aurvan",
   Kilmoor: "Kilmoor",
-  Egijebus: "Egijebus",
   Orneh: "Orneh",
   Jessen: "Jessen",
-  Jessen: "Ahatma",
-  Mayev: "Mayev"
+  Ahatma: "Ahatma",
+  Mayev: "Mayev",
+  Galovia: "Galovia",
+  Aebeth: "Aebeth",
+  Faeriss: "Faeriss",
+  Zirétha: "Zirétha",
+  Elohandria: "Elohandria",
+  Tehya: "Tehya",
+  Egijebus: "Egijebus"
 };
+
 const hoursList = {
   "12:00am": 0,
   "1:00am": 1,
@@ -485,11 +513,14 @@ function populateSelect(selector, options, type) {
 async function startSetUp() {
   console.log("in startSetUp() ...");
   //set up connection to Web Socket
-  //old:
+  //way old:
   //"ws://ec2-54-193-45-41.us-west-1.compute.amazonaws.com:8090"
+  //sorta old:
+  //"ws://ec2-54-183-136-214.us-west-1.compute.amazonaws.com:8090"
+
 
   theSock = await new WebSocket(
-    "ws://ec2-54-183-136-214.us-west-1.compute.amazonaws.com:8090"
+    "ws://ec2-54-183-216-27.us-west-1.compute.amazonaws.com:8090"
   );
   theSock.onopen = function () {
     console.log("websocket is connected ...");
