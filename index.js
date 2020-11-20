@@ -21,8 +21,8 @@ app.set('view engine', 'ejs');
 
 //////////////////////MONGO SHIT//////////////////////////////////////////////////////////////////////////////////////////////////////
 //mongoose.connect('mongodb://localhost/book');
-mongoose.connect('mongodb://user666:satan@ds133360.mlab.com:33360/book');
-
+//mongoose.connect('mongodb://user666:satan@ds133360.mlab.com:33360/book');
+mongoose.connect('mongodb+srv://user666:satan@book.y72ue.mongodb.net/book?retryWrites=true&w=majority');
 var diarySchema = mongoose.Schema;
 
 var writingSchema = diarySchema({
