@@ -1,5 +1,5 @@
 {
-  "name": "book7",
+  "name": "LogginsBook",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Havrilesky/Book7.git"
+    "url": "git+https://github.com/Havrilesky/MDBook.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Havrilesky/Book7/issues"
+    "url": "https://github.com/Havrilesky/MDBook/issues"
   },
-  "homepage": "https://github.com/Havrilesky/Book7#readme",
+  "homepage": "https://github.com/Havrilesky/MDBook#readme",
   "dependencies": {
     "express": "^4.16.3",
     "ws": "^5.2.0",

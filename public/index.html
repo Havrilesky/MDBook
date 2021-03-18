@@ -32,18 +32,21 @@
   </head>
 
   <body>
-    <nav class="brown lighten-3" role="navigation">
+    <nav class="brown lighten-3" id = "topNav" role="navigation">
       <div class="nav-wrapper container">
-        <a id="logo-container" href="#" class="brand-logo">The Book</a>
-        <ul class="right hide-on-med-and-down">
-          <li><a href="#">There's nothing to see here</a></li>
-          <li><a href="#">Just go on about your business</a></li>
-        </ul>
 
-        <ul id="nav-mobile" class="sidenav">
-          <li><a href="#">There's nothing to see here</a></li>
-          <li><a href="#">Just go on about your business</a></li>
-        </ul>
+        <div class="row">
+          <div class="input-field col s3">
+            <input id="loginName" type="text" class="validate">
+            <label for="loginName">Name</label>
+          </div>
+          <a class="waves-effect waves-light btn-small" onclick="doLoggins('yo')">Loggins</a>
+          <div class="input-field col s3">
+            <input id="loginPass" type="password" class="validate">
+            <label for="loginPass">Password</label>
+          </div>
+        </div>
+
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"
           ><i class="material-icons">menu</i></a
         >
@@ -79,7 +82,7 @@
       <div class="col s12 m12" id="cardList">
         <div class="card hide" id="writingItemTemplate">
           <div class="card-image myGrad">
-            <img class="cardImg" src="testBG.png" />
+            <img class="cardImg" src="" />
             <a
               class="btn-floating halfway-fab  amber accent-3 waves-effect waves-light"
               onclick="newWriting(this.parentNode.parentNode);"
@@ -100,7 +103,7 @@
                 <option value="Cool">Cool</option>
                 <option value="Chilly">Chilly</option>
                 <option value="Cold">Cold</option>
-                <option value="Freezing">Feezing</option>
+                <option value="Freezing">Freezing</option>
                 <option value="Frigid">Frigid</option>
               </select>
             </div>
@@ -194,17 +197,66 @@
 
     <footer
       class="
-			 page-footer brown"
+			 page-footer brown" id = "footerArea"
     >
-      <div class="container">
+      <form class="container">
         <div class="row">
           <div class="col l6 s12">
-            <h5 class="white-text">This has been "The Book"</h5>
+            <h5 class="white-text" id = "loggedIn">not logged in!"</h5>
             <p class="grey-text text-lighten-4">
               Nevermind, you sack of shit!
             </p>
           </div>
-        </div>
+          <div class="l6 push-l6 hide">
+          <table>
+          <tr id="aurvanGroups">
+            <td style="text-align:right">Aurvan</td>
+            <td class="checkbox">
+              <input type="checkbox" name="free" value="mon09" onClick="this.checked=!this.checked;">            </td>
+            <td class="checkbox">
+              <input type="checkbox">
+            </td>
+            <td class="checkbox">
+              <input type="checkbox">
+            </td>
+            <td class="checkbox">
+              <input type="checkbox">
+            </td>
+          </tr>
+          <tr id="aurvanGroups">
+            <td style="text-align:right">Kiedis</td>
+            <td class="checkbox">
+              <input type="checkbox">
+            </td>
+            <td class="checkbox">
+              <input type="checkbox">
+            </td>
+            <td class="checkbox">
+              <input type="checkbox">
+            </td>
+            <td class="checkbox">
+              <input type="checkbox">
+            </td>
+          </tr>
+          <tr id="aurvanGroups">
+            <td style="text-align:right">Kilmoor</td>
+            <td class="checkbox">
+              <input type="checkbox" onClick='changeGroup()'>
+            </td>
+            <td class="checkbox">
+              <input type="checkbox">
+            </td>
+            <td class="checkbox">
+              <input type="checkbox">
+            </td>
+            <td class="checkbox">
+              <input type="checkbox">
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
       </div>
       <div class="footer-copyright">
         <div class="container">
@@ -270,6 +322,7 @@
         //onSelect: goToDate(new Date(PigPicker.value))
 	  });
 	  */
+
     </script>
   </body>
 </html>

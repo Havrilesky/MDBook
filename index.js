@@ -1,3 +1,6 @@
+//DON'T FORGET
+//     1. Switch the ws socket to amazon before deploying (not local host) LINE:617 of thebook.js
+
 var express = require('express');
 var path = require('path');
 
@@ -134,57 +137,10 @@ Assignment.findOne(function (err, doc) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-/*
-app.get('/', function (req, res) {
-   res.sendFile(__dirname + '/ws.html');
-})
-*/
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-//app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
-//app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-//app.use('/', index);
-//app.use('/users', users);
-
-app.use(express.static(path.join(__dirname, '/public')));
-//app.use('/', index);
-
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '/index.html'));
-});
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
-
-// error handler
-app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-});
-
-module.exports = app;
-
 ////WEBSOCKET SERVER///////////////////////////////////////////////////////////////////////////////////
 //{"Command":"NEW",
 //"Data": hopefully looka lot like writingSchema}
-//"NEW", "DELETE", "SAVE", 
+//"NEW", "DELETE", "SAVE",
 var clients = [];
 
 var WebSocketServer = require('ws').Server,
@@ -360,8 +316,17 @@ Date:{
                     }); //end save
                 };
             }); //end findOne
-        }; //end LASTDATE
-
+        } else if (inMessJson.Command == "PING") { ////////////////////////////////////LASTDATE coming in for database///////////////////////////////////////
+            console.log("got PING");
+            var newWSMessage = {
+                "Command": "PONG",
+                "Data": null
+            };
+            var outMessJson = JSON.stringify(newWSMessage);
+            console.log('outMessJson:' + outMessJson);
+            //just send the PONG to the client who PINGed
+            clients[index].send(outMessJson);
+        };//END PING
 
         ws.on('close', function (ws) {
             console.log((new Date()) + " Client (index:" + index + "): " + ws.remoteAddress + " disconnected.");
@@ -379,6 +344,53 @@ Date:{
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+/*
+app.get('/', function (req, res) {
+   res.sendFile(__dirname + '/ws.html');
+})
+*/
+
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+//app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
+//app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+//app.use('/', index);
+//app.use('/users', users);
+
+app.use(express.static(path.join(__dirname, '/public')));
+//app.use(express.static(path.join(__dirname, '/images')));
+//app.use('/', index);
+
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, '/index.html'));
+});
+
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+    var err = new Error('Not Found Yo');
+    err.status = 404;
+    next(err);
+});
+
+// error handler
+app.use(function (err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    res.status(err.status || 500);
+    // render the error page
+    console.error("ERROR:" + err.message + " status: " + err.status);
+    //res.render('error');
+});
+
+module.exports = app;
 
 app.listen(3000, function () {
     console.log('Server listening on port 3000!');
