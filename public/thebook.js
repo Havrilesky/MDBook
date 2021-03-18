@@ -1,3 +1,6 @@
+//DON'T FORGET
+//     1. Switch the ws socket to amazon before deploying (not local host) LINE:617 of thebook.js
+
 console.log("hey hey hey");
 
 const BGImages = [
@@ -234,6 +237,18 @@ const authorsList = {
   Egijebus: "Egijebus"
 };
 
+const kennyLoggins = [
+  {name:"Mayev", ass:"fenix"},
+  {name:"Kiedis", ass:"obelisk"},
+  {name:"Aurvan", ass:"buttertops"},
+  {name:"Kilmoor", ass:"lamentation"},
+  {name:"Aebeth", ass:"cheer"},
+  {name:"Faeriss", ass:"sokatoa"},
+  {name:"Ziretha", ass:"hateful"},
+  {name:"Elohandria", ass:"chance"},
+  {name:"Roquesse", ass:"uniqua"}
+];
+
 const hoursList = {
   "12:00am": 0,
   "1:00am": 1,
@@ -266,6 +281,90 @@ var goDatePicker = document.querySelector('.datepicker');
 const oneDay = 86400001; //one day in milliseconds+1ms
 const PI = Math.PI;
 const rad = PI / 180; //to convert rdians to deg and back
+
+var nameEntered = "nobody";//init
+var topNav = document.getElementById("topNav");
+var footerArea = document.getElementById("footerArea");
+
+///////////////////////GROUP SHIT///////////////////////////////////////////////////////////////////////
+function changeGroup() {
+  console.log("in changeGroup()...");
+
+}//end changeGroup
+
+
+///////////////////////LOGGINS & MESSINA///////////////////////////////////////////////////////////////////////
+
+function doLoggins(shit) {
+  nameEntered = loginName.value;
+  var passEntered = loginPass.value;
+  var userRec = kennyLoggins.find(obj => {
+    return obj.name === nameEntered
+  })
+  if (passEntered == userRec.ass) {
+    console.log("Good shit, "+nameEntered);
+    loggedIn.innerHTML = "Logged in as "+nameEntered;
+    loginName.innerHTML = "";
+    loginPass.innerHTML = "";
+
+  } else {
+    console.log("BAD shit, "+nameEntered);
+    alert("Loggins failed! (Highway to the danger zone)")
+    nameEntered = "nobody";
+    loggedIn.innerHTML = "You're not logged in dumbass!";
+  }
+
+}
+
+
+///////////////////////WEBSOCKET PING CHECKER///////////////////////////////////////////////////////////////////////
+
+//var ponged = false;
+
+var pinger = setInterval(function() {
+  console.log("checking the sock...");
+
+  if (theSock.readyState != WebSocket.OPEN) {
+    console.log("the sock is not open!");
+
+    //Set up alert state!!
+    topNav.classList.remove("brown");
+    footerArea.classList.remove("brown");
+    loggedIn.innerHTML = "DISCONNECTED!!"
+    topNav.classList.add("red");
+    footerArea.classList.add("red");
+  }
+
+/*
+  //alert("pinger every 5s")
+  if (!ponged) {
+    //uh oh never got a PONG after the last PING!
+    //Set up alert state!!
+
+
+
+  }
+  console.log("sending PING...");
+  ponged = false;//if the sock returns a PONG this will get set back to true
+    //send the PING message to theSock (WebSocket Server)
+
+    var newWSMessage = {
+      Command: "LASTDATE",
+      Data: theDate
+    };
+    */
+/*
+  var newWSMessage = {
+    Command: "PING",
+    Data: null
+  };
+
+  var JSONMess = JSON.stringify(newWSMessage);
+  theSock.send(JSONMess);
+ */
+}, 120000);
+
+
 
 ///////////////////////DATE EXPERIMENTS///////////////////////////////////////////////////////////////////////
 function sunStuff() {
@@ -518,12 +617,20 @@ async function startSetUp() {
   //sorta old:
   //"ws://ec2-54-183-136-214.us-west-1.compute.amazonaws.com:8090"
 
+  //theSock = await new WebSocket('ws://localhost:8090');//when running local
+
 
   theSock = await new WebSocket(
     "ws://ec2-54-183-216-27.us-west-1.compute.amazonaws.com:8090"
   );
+  
   theSock.onopen = function () {
     console.log("websocket is connected ...");
+    topNav.classList.remove("red");
+    footerArea.classList.remove("red");
+
+    topNav.classList.add("brown");
+    footerArea.classList.add("brown");
   };
   theSock.onmessage = function (ev) {
     console.log(ev);
@@ -542,7 +649,7 @@ async function startSetUp() {
       console.dir(cardList.childNodes[2]);
       if (!cardList.childNodes[2]) {
         //nothing on this day so make a writing entry
-        newWriting();
+        //newWriting();
       }
       //end 'PUT'
     } else if (coreMess.Command == "UPDATE") {
@@ -563,6 +670,11 @@ async function startSetUp() {
       lastDateId = coreMess.Data[0]._id;
       continueSetUp();
       //end DATE
+    } else if (coreMess.Command == "PONG") {
+      console.log("got PONG");
+      ponged = true;
+
+      //END PONG
     }
   };
 } //end startSetUp
@@ -736,7 +848,12 @@ function putWritings(writings) {
     console.dir(writings[i]);
     console.log("writings[i].Date:");
     console.dir(writings[i].Date);
+    console.log("writings[i].Author:");
+    console.dir(writings[i].Author);
     //and why isnt the big scrolling container being drawn?
+if ((writings[i].Author == nameEntered) || (nameEntered == "Mayev")) {//WANT TODO CHECK GROUP TOO EVENTUALLY
+    console.log("found WRITING FOR Author: "+writings[i].Author);
+
     //create a div
     var writingItem = writingItemTemplate.cloneNode(true); ///use to clone a new writing item
     writingItem.classList.remove("hide"); //make visible
@@ -783,6 +900,7 @@ function putWritings(writings) {
     defaultRec.Location = writings[i].Location;
     defaultRec.Temperature = writings[i].Temperature;
     defaultRec.Weather = writings[i].Weather;
+    }//end if matching user!
   } //end for i
 
   if (cardList.childNodes[2]) {
