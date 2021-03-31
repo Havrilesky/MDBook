@@ -219,7 +219,7 @@ const locationsList = {
     Lon: -102
   }
 };
-
+//
 const authorsList = {
   Kiedis: "Kiedis",
   Aurvan: "Aurvan",
