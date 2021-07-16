@@ -234,6 +234,7 @@ const authorsList = {
   Zirétha: "Zirétha",
   Elohandria: "Elohandria",
   Tehya: "Tehya",
+  Roquesse: "Roquesse",
   Egijebus: "Egijebus"
 };
 
@@ -617,13 +618,15 @@ async function startSetUp() {
   //sorta old:
   //"ws://ec2-54-183-136-214.us-west-1.compute.amazonaws.com:8090"
 
-  //theSock = await new WebSocket('ws://localhost:8090');//when running local
+ // theSock = await new WebSocket('ws://localhost:8090');//when running local
 
 
   theSock = await new WebSocket(
     "ws://ec2-54-183-216-27.us-west-1.compute.amazonaws.com:8090"
   );
-  
+
+
+
   theSock.onopen = function () {
     console.log("websocket is connected ...");
     topNav.classList.remove("red");
@@ -972,6 +975,9 @@ function newWriting(writingItem) {
     var weatherSelect = writingItem.childNodes[1].childNodes[7].childNodes[1];
       */
 
+    defaultRec.Author = nameEntered; //set the author value to logged user by default
+
+
   if (writingItem) {
     defaultRec.Author =
       writingItem.childNodes[1].childNodes[11].childNodes[1].value; //set the author value
@@ -981,7 +987,11 @@ function newWriting(writingItem) {
       writingItem.childNodes[1].childNodes[7].childNodes[1].value; //set the weather value
     defaultRec.Temperature =
       writingItem.childNodes[1].childNodes[5].childNodes[1].value; //set the temp value
-  } //end any child nodes
+    //end any child nodes
+  }
+
+
+
   //get default or last data
   //save data to mongo
   var newWSMessage = {
