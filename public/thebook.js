@@ -485,11 +485,15 @@ function populateSelect(selector, options, type) {
 async function startSetUp() {
   console.log("in startSetUp() ...");
   //set up connection to Web Socket
+  //old old:
+  //"ws://ec2-54-193-45-41.us-west-1.compute.amazonaws.com:8090"
+
   //old:
   //"ws://ec2-54-193-45-41.us-west-1.compute.amazonaws.com:8090"
 
+
   theSock = await new WebSocket(
-    "ws://ec2-54-183-136-214.us-west-1.compute.amazonaws.com:8090"
+    "ws://ec2-3-129-63-119.us-east-2.compute.amazonaws.com::8090"
   );
   theSock.onopen = function () {
     console.log("websocket is connected ...");
