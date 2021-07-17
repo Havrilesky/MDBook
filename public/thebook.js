@@ -618,11 +618,15 @@ async function startSetUp() {
   //sorta old:
   //"ws://ec2-54-183-136-214.us-west-1.compute.amazonaws.com:8090"
 
+    //pretty old 2020:
+  //"ws://ec2-54-183-216-27.us-west-1.compute.amazonaws.com:8090"
+
+
  // theSock = await new WebSocket('ws://localhost:8090');//when running local
 
 
   theSock = await new WebSocket(
-    "ws://ec2-54-183-216-27.us-west-1.compute.amazonaws.com:8090"
+    "ws://ec2-3-129-63-119.us-east-2.compute.amazonaws.com:8090"
   );
 
 
