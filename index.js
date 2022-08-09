@@ -29,7 +29,7 @@ app.set('view engine', 'ejs');
 //mongoose.connect('mongodb+srv://user666:satan@book.y72ue.mongodb.net/book?retryWrites=true&w=majority');
 
 //new 2022 version of connect?????
-var promise = mongoose.connect('mongodb+srv://user666:satan@book.y72ue.mongodb.net/book?retryWrites=true&w=majority', {
+var promise = mongoose.connect('mongodb://user666:satan@book.y72ue.mongodb.net/book?retryWrites=true&w=majority', {
   useMongoClient: true,
   /* other options */
 });
