@@ -1,7 +1,7 @@
 //DON'T FORGET
 //     1. Switch the ws socket to amazon before deploying (not local host) LINE:617 of thebook.js
 
-console.log("hey hey hey");
+console.log("starting BookGroups version...");
 
 const BGImages = [
   [
@@ -621,12 +621,16 @@ async function startSetUp() {
     //pretty old 2020:
   //"ws://ec2-54-183-216-27.us-west-1.compute.amazonaws.com:8090"
 
+//old 2021:
+
+//    "ws://ec2-3-129-63-119.us-east-2.compute.amazonaws.com:8090"
+
 
  // theSock = await new WebSocket('ws://localhost:8090');//when running local
 
 
   theSock = await new WebSocket(
-    "ws://ec2-3-129-63-119.us-east-2.compute.amazonaws.com:8090"
+    "ws://ec2-18-219-218-24.us-east-2.compute.amazonaws.com:8090"
   );
 
 
