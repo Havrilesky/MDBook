@@ -626,6 +626,7 @@ async function startSetUp() {
 //    "ws://ec2-3-129-63-119.us-east-2.compute.amazonaws.com:8090"
 
 
+//local version for dev (SWITCH BEFORE DEPLOYMENT!)
  // theSock = await new WebSocket('ws://localhost:8090');//when running local
 
 
