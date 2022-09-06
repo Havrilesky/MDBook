@@ -26,14 +26,25 @@ app.set('view engine', 'ejs');
 //mongoose.connect('mongodb://localhost/book');
 //mongoose.connect('mongodb://user666:satan@ds133360.mlab.com:33360/book');
 //2021 version of connect
-mongoose.connect('mongodb+srv://user666:satan@book.y72ue.mongodb.net/book?retryWrites=true&w=majority');
+//mongoose.connect('mongodb+srv://user666:satan@book.y72ue.mongodb.net/book?retryWrites=true&w=majority');
 
-/*
+
 //new 2022 version of connect?????
-var promise = mongoose.connect('mongodb://user666:satan@book.y72ue.mongodb.net/book?retryWrites=true&w=majority', {
-  useMongoClient: true,
-});
-*/
+const mongoOptions = {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,   //add it
+  //useMongoClient: true,
+  autoIndex: false, // Don't build indexes
+  //reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
+  //reconnectInterval: 500, // Reconnect every 500ms
+  poolSize: 10, // Maintain up to 10 socket connections
+  // If not connected, return errors immediately rather than waiting for reconnect
+  bufferMaxEntries: 0,
+};
+mongoose.connect('mongodb+srv://user666:satan@book.y72ue.mongodb.net/book?retryWrites=true&w=majority', mongoOptions)
+.then(() => console.log('Veri baglantisi saglandi...'))
+.catch(err =>console.log(err));
+
 
 var diarySchema = mongoose.Schema;
 

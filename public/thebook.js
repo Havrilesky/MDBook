@@ -627,13 +627,14 @@ async function startSetUp() {
 
 
 //local version for dev (SWITCH BEFORE DEPLOYMENT!)
- // theSock = await new WebSocket('ws://localhost:8090');//when running local
+  theSock = await new WebSocket('ws://localhost:8090');//when running local
 
 
+  /*
   theSock = await new WebSocket(
     "ws://ec2-18-219-218-24.us-east-2.compute.amazonaws.com:8090"
   );
-
+*/
 
 
   theSock.onopen = function () {
