@@ -221,6 +221,7 @@ const locationsList = {
 };
 //
 const authorsList = {
+  Steff: "Steff",
   Kiedis: "Kiedis",
   Aurvan: "Aurvan",
   Kilmoor: "Kilmoor",
@@ -238,6 +239,29 @@ const authorsList = {
   Egijebus: "Egijebus"
 };
 
+
+const authorsListNew = {
+  Steff: {Value:"Steff", Disable: false},
+  Kiedis: {Value: "Kiedis", Disable: false},
+  Aurvan: {Value: "Aurvan", Disable: false},
+  Kilmoor: {Value: "Kilmoor", Disable: false},
+  Ahatma: {Value: "Ahatma", Disable: false},
+  Mayev: {Value: "Mayev", Disable: false},
+  Galovia: {Value: "Galovia", Disable: false},
+  Aebeth: {Value: "Aebeth", Disable: false},
+  Faeriss: {Value: "Faeriss", Disable: false},
+  Zirétha: {Value: "Zirétha", Disable: false},
+  Elohandria: {Value: "Elohandria", Disable: false},
+  Tehya: {Value: "Tehya", Disable: false},
+  Roquesse: {Value: "Roquesse", Disable: false},
+  Thorne: {Value: "Thorne", Disable: false},
+  Meadquasher: {Value: "Meadquasher", Disable: false},
+  Orneh: {Value: "Orneh", Disable: true},
+  Jessen: {Value: "Jessen", Disable: true},
+  Egijebus: {Value: "Egijebus", Disable: true}
+};
+
+
 const kennyLoggins = [
   {name:"Mayev", ass:"fenix"},
   {name:"Kiedis", ass:"obelisk"},
@@ -247,6 +271,9 @@ const kennyLoggins = [
   {name:"Faeriss", ass:"sokatoa"},
   {name:"Ziretha", ass:"hateful"},
   {name:"Elohandria", ass:"chance"},
+  {name:"Thorne", ass:"mayaheine"},
+  {name:"Meadquasher", ass:"pelor"},
+  {name:"Steff", ass:"hin"},
   {name:"Roquesse", ass:"uniqua"}
 ];
 
@@ -602,6 +629,7 @@ function populateSelect(selector, options, type) {
       option.value = Object.values(options)[i];
     } //end else not location
     option.text = Object.keys(options)[i];
+    //option.disabled = Object.keys(options)[i];
     //selector.appendChild(option);
     selector.append(option);
   } //end for
@@ -609,6 +637,33 @@ function populateSelect(selector, options, type) {
   selector.onchange = saveWriting; ///I don't think this is correct anymore
   $("select").formSelect(); //to force an update of the selectors
 } // end populateSelect
+
+function populateSelectNew(selector, options, type) {
+  console.log("populating new-style ");
+  console.dir(selector);
+
+  for (var i = 0; i < Object.keys(options).length; i++) {
+    //add each option to the selector &
+    //set the onClick for the selector
+    var option = document.createElement("option");
+    if (type == "location") {
+      option.value = Object.keys(options)[i]; //locations just take the name as the value
+    } else {
+      option.value = Object.values(options)[i].Value;
+    } //end else not location
+    option.text = Object.keys(options)[i];
+    if (Object.values(options)[i].Disable) {
+      option.disabled = true;
+    }
+    //selector.appendChild(option);
+    selector.append(option);
+  } //end for
+  selector.setAttribute("value", type);
+  selector.onchange = saveWriting; ///I don't think this is correct anymore
+  $("select").formSelect(); //to force an update of the selectors
+} // end populateSelect
+
+
 
 async function startSetUp() {
   console.log("in startSetUp() ...");
@@ -627,14 +682,14 @@ async function startSetUp() {
 
 
 //local version for dev (SWITCH BEFORE DEPLOYMENT!)
- // theSock = await new WebSocket('ws://localhost:8090');//when running local
+  theSock = await new WebSocket('ws://localhost:8090');//when running local
 
 
-
+/*
   theSock = await new WebSocket(
     "ws://ec2-18-219-218-24.us-east-2.compute.amazonaws.com:8090"
   );
-
+*/
 
 
   theSock.onopen = function () {
@@ -700,7 +755,7 @@ function continueSetUp() {
     "/" +
     lastDate.getFullYear();
 
-  M.Datepicker.getInstance(goDatePicker).setDate(new Date(2015, 7, 7), true);
+  M.Datepicker.getInstance(goDatePicker).setDate(new Date(2001, 7, 7), true);
   /*
     const PigPicker = document.querySelector(".datepicker");
     M.Datepicker.init(PigPicker, {
@@ -714,7 +769,8 @@ function continueSetUp() {
   //set up writing control panel
   console.dir(timeSelect);
   populateSelect(timeSelect, hoursList, "hour");
-  populateSelect(authorSelect, authorsList, "author");
+  populateSelectNew(authorSelect, authorsListNew, "author");
+  //populateSelect(authorSelect, authorsList, "author");
   populateSelect(locationSelect, locationsList, "location");
 
   //fetch writings for that date - theSock message handler will populate them

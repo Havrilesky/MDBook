@@ -42,7 +42,7 @@ const mongoOptions = {
   bufferMaxEntries: 0,
 };
 mongoose.connect('mongodb+srv://user666:satan@book.y72ue.mongodb.net/book?retryWrites=true&w=majority', mongoOptions)
-.then(() => console.log('Veri baglantisi saglandi...'))
+.then(() => console.log('Vade retro...'))
 .catch(err =>console.log(err));
 
 
