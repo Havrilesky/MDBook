@@ -687,7 +687,7 @@ async function startSetUp() {
 
 
   theSock = await new WebSocket(
-    "ws://ec2-18-219-218-24.us-east-2.compute.amazonaws.com:8090"
+    "ws://ec2-3-135-185-126.us-east-2.compute.amazonaws.com:8090"
   );
 
 
