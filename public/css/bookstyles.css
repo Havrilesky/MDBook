@@ -64,11 +64,21 @@ h3 {
   color: #fff;
 }
 
+.card {
+  background-color: var(--end-gradient-color);
+}
+
+.sunMoon {
+  color: var(--text-color, #000); /* Fallback to black if --text-color is not defined */
+}
+
 .writingArea * {
   background-color: none;
 }
 
-.entryText {}
+.entryText, .entryText p, .entryText .p1 {
+  color: var(--text-color, #000) !important; /* Applying !important to enforce this rule */
+}
 
 
 .selectPulldowns {
@@ -82,16 +92,15 @@ h3 {
   border-width: 1px;
   border-style: solid;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, .5) !important;
-  z-index: 1;
+  z-index: 3;
 
 }
 
 .myGrad {
-  background: linear-gradient(to top,
-      hsl(0, 0%, 100%) 0%,
-      hsla(0, 0%, 100%, 0) 100%) !important;
-  height: 15rem !important;
+  position: relative;
+  height: 15rem;
   background-size: cover !important;
+  overflow: visible;
 }
 
 .myGrad:after {
@@ -101,17 +110,19 @@ h3 {
   top: 0;
   width: 100%;
   height: 100%;
-  display: inline-block;
-  background: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(to bottom, transparent, var(--end-gradient-color));
+  z-index: 2;  // Ensure this is above the image
 }
 
 .cardImg {
-  position: absolute !important;
-  display: block;
-  height: 15rem;
-  background-size: cover !important;
-  object-fit: cover !important;
-  object-position: 0% 0% !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 0% 0%;
+  z-index: 1;  // Image should be below the overlay
 }
 
 #controlTemplate {
@@ -148,17 +159,46 @@ td{
   padding: 5px;
 }
 
-[type="checkbox"]:not(:checked), [type="checkbox"]:checked {
-  opacity: 1;
-}
 
-.checkbox{ 
-  width: 40px; 
-  color:#fff;
-  margin: auto;
-}
 input{ 
   margin: auto;  
   /*setting margin to auto of the cheeckbox*/ 
   display: flex;/*Flex box property*/ 
+}
+
+.card .browser-default[type="checkbox"] {
+  position: relative;
+  opacity: 1; /* Make the checkbox visible */
+  pointer-events: auto; /* Allow pointer events */
+  -webkit-appearance: checkbox; /* Default styling for checkboxes in WebKit browsers */
+  appearance: checkbox; /* Default styling for checkboxes in standard-compliant browsers */
+  width: 20px; /* Reset width to default */
+  height: 20px; /* Reset height to default */
+  z-index: 3;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center; /* This will vertically center the checkbox with the text */
+  gap: 4px; /* Optional: Adds some space between the checkbox and the label text */
+  margin-top: 17px;
+}
+
+.checkbox-label .browser-default[type="checkbox"] {
+  margin: 0; /* Reset margin */
+  vertical-align: middle; /* Aligns the checkbox vertically */
+}
+
+.card.disabled {
+  opacity: 0.5; /* Gray out the card */
+  pointer-events: none; /* Prevent all pointer events */
+}
+
+.btn-floating {
+z-index: 3;
+
+}
+
+.card .card-image img {
+  position: absolute;
 }

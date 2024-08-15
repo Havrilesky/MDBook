@@ -1,5 +1,5 @@
 //DON'T FORGET
-//     1. Switch the ws socket to amazon before deploying (not local host) LINE:617 of thebook.js
+//     1. Switch the ws socket to amazon before deploying (not local host) in startSetUp() of thebook.js
 
 var express = require('express');
 var path = require('path');
@@ -56,6 +56,7 @@ var writingSchema = diarySchema({
     Temperature: String,
     Weather: String,
     WritingContent: String,
+    Private: { type: Boolean, default: false },
 }); //end mapItemSchema
 
 var lastDateSchema = diarySchema({

@@ -1,5 +1,5 @@
 //DON'T FORGET
-//     1. Switch the ws socket to amazon before deploying (not local host) LINE:617 of thebook.js
+//     1. Switch the ws socket to amazon before deploying (not local host) in startSetUp() of thebook.js
 
 console.log("starting BookGroups version...");
 
@@ -241,23 +241,25 @@ const authorsList = {
 
 
 const authorsListNew = {
-  Steff: {Value:"Steff", Disable: false},
-  Kiedis: {Value: "Kiedis", Disable: false},
+  Fern: {Value:"Fern", Disable: false},
+  Twigs: {Value:"Twigs", Disable: false},
   Aurvan: {Value: "Aurvan", Disable: false},
   Kilmoor: {Value: "Kilmoor", Disable: false},
-  Ahatma: {Value: "Ahatma", Disable: false},
   Mayev: {Value: "Mayev", Disable: false},
   Galovia: {Value: "Galovia", Disable: false},
   Aebeth: {Value: "Aebeth", Disable: false},
+  Kiedis: {Value: "Kiedis", Disable: false},
   Faeriss: {Value: "Faeriss", Disable: false},
-  Zirétha: {Value: "Zirétha", Disable: false},
-  Elohandria: {Value: "Elohandria", Disable: false},
+  Zirétha: {Value: "Zirétha", Disable: true},
+  Elohandria: {Value: "Elohandria", Disable: true},
   Tehya: {Value: "Tehya", Disable: false},
-  Roquesse: {Value: "Roquesse", Disable: false},
+  Roquesse: {Value: "Roquesse", Disable: true},
+  Ahatma: {Value: "Ahatma", Disable: true},
   Thorne: {Value: "Thorne", Disable: false},
   Meadquasher: {Value: "Meadquasher", Disable: false},
   Orneh: {Value: "Orneh", Disable: true},
   Jessen: {Value: "Jessen", Disable: true},
+  Steff: {Value:"Steff", Disable: true},
   Egijebus: {Value: "Egijebus", Disable: true}
 };
 
@@ -267,13 +269,11 @@ const kennyLoggins = [
   {name:"Kiedis", ass:"obelisk"},
   {name:"Aurvan", ass:"buttertops"},
   {name:"Kilmoor", ass:"lamentation"},
-  {name:"Aebeth", ass:"cheer"},
+  {name:"Fern", ass:"threadmoss"},
+  {name:"Twigs", ass:"pryholt"},
   {name:"Faeriss", ass:"sokatoa"},
-  {name:"Ziretha", ass:"hateful"},
-  {name:"Elohandria", ass:"chance"},
   {name:"Thorne", ass:"mayaheine"},
   {name:"Meadquasher", ass:"pelor"},
-  {name:"Steff", ass:"hin"},
   {name:"Roquesse", ass:"uniqua"}
 ];
 
@@ -314,6 +314,8 @@ var nameEntered = "nobody";//init
 var topNav = document.getElementById("topNav");
 var footerArea = document.getElementById("footerArea");
 
+var sunn = null;
+
 ///////////////////////GROUP SHIT///////////////////////////////////////////////////////////////////////
 function changeGroup() {
   console.log("in changeGroup()...");
@@ -339,7 +341,7 @@ function doLoggins(shit) {
     console.log("BAD shit, "+nameEntered);
     alert("Loggins failed! (Highway to the danger zone)")
     nameEntered = "nobody";
-    loggedIn.innerHTML = "You're not logged in dumbass!";
+    loggedIn.innerHTML = "You're not logged in, dumbass!";
   }
 
 }
@@ -603,7 +605,8 @@ var defaultRec = {
   Location: "Oldsea",
   Temperature: "Warm",
   Weather: "Clear",
-  WritingContent: ""
+  WritingContent: "",
+  Private: false // Default value is not private
 };
 
 var inDay;
@@ -614,6 +617,17 @@ var inLon;
 var inTimeZone;
 
 var theSock;
+
+//////////////////////////////////////////////UI WIDGETS
+
+function updateCheckboxHandler(checkbox) {
+  // oClick for the private checkbox (or whatever checkbox really)
+  var cardId = checkbox.closest('.card').id;
+  var cardId2 = checkbox.parentNode.parentNode.parentNode.parentNode.id;
+  console.log('Checkbox checked with cardId:', cardId);
+  console.log('Checkbox checked with cardId2:', cardId2);
+  update(cardId, 'Private', checkbox.checked);
+}
 
 function populateSelect(selector, options, type) {
   console.log("populating ");
@@ -685,9 +699,11 @@ async function startSetUp() {
  // theSock = await new WebSocket('ws://localhost:8090');//when running local
 
 
+//AMAZON server version for prod (SWITCH BEFORE DEPLOYMENT!)
+//BUT BE SURE this URL is accurate for your (new?) AWS thingy!  just keep the 8090 Port in there!
 
   theSock = await new WebSocket(
-    "ws://ec2-3-135-185-126.us-east-2.compute.amazonaws.com:8090"
+    "ws://ec2-3-19-141-227.us-east-2.compute.amazonaws.com:8090"
   );
 
 
@@ -725,6 +741,7 @@ async function startSetUp() {
       //gotta populate the correct writing with the new data
       console.log("got a UPDATE with: ");
       console.dir(coreMess.Data);
+      console.dir('coreMess.Data[0]._id: '+ coreMess.Data[0]._id);
       //find the correct writing div on the page and repop all the data
 
       var divToUpdate = document.getElementById(coreMess.Data[0]._id);
@@ -816,7 +833,7 @@ function getBGImage(altDeg, weather) {
   var ImgFileName = "images/" + BGImages[sunIndex][cloudIndex] + ".png";
   console.log("ImgFileName is: " + ImgFileName);
 
-  return ImgFileName;
+  return {ImgFileName: ImgFileName, sunIndex: sunIndex};
 } //end getBGImage
 
 function sortWritingDivs() {
@@ -909,6 +926,80 @@ function sortWritings(writings) {
   return writingArray;
 } //end sortWritings
 
+function disableCard(card) {
+  var inputs = card.querySelectorAll('input, textarea, select');
+  inputs.forEach(function(input) {
+    input.disabled = true; // Disable each input, textarea, and select
+  });
+
+  var editableDivs = card.querySelectorAll('[contenteditable="true"]');
+  editableDivs.forEach(function(div) {
+    div.contentEditable = "false"; // This will disable editing
+  });
+
+
+  card.classList.add('disabled'); // Visually indicate the card is disabled
+
+}// end disableCard
+
+function updateCardGradient(card, sunIndex) {
+  console.log('in updateCardGradient()...');
+
+  console.log("with card = "+card);
+  console.log("with sunIndex = "+sunIndex);
+  let gradientColor = determineGradientColor(sunIndex); // Function to get the color
+  console.log(" gradientColor = "+gradientColor);
+  var cardImage = card.querySelector('.myGrad');
+  card.style.setProperty('--end-gradient-color', gradientColor);
+  let textColor = getContrastColor(gradientColor);
+  console.log(" textColor = "+textColor);
+  card.style.setProperty('--text-color', textColor);
+}// end updateCardGradient
+
+
+function determineGradientColor(sunIndex) {
+
+  let BGColor = '#FFFFFF';  // Default to black
+
+  // Define colors for different times of day
+  const colors = {
+    11: "#000000", // full night
+    10: "#0A2342", // astronomical twilight
+    9: "#1B3B6F",  // nautical twilight
+    8: "#36577C",  // civil twilight
+    7: "#4F75A6",  // blue hour
+    6: "#829CBC",  // after sunrise / before sunset
+    5: "#A9BFD9",  // morning / evening light
+    4: "#CADFF5",  // close to noon / afternoon
+    3: "#E2F1FC",  // bright day
+    2: "#F0F8FF",  // brighter
+    1: "#F8FAFF",  // almost white
+    0: "#FFFFFF"   // white, full daylight
+  };
+
+  // Select the color based on sunIndex
+  if (colors.hasOwnProperty(sunIndex)) {
+    BGColor = colors[sunIndex];
+  } else if (sunIndex < 0) {
+    BGColor = "#FFFFFF"; // full daylight
+  } else {
+    // For sunIndex > 11, use the darkest color
+    BGColor = colors[11];
+  }
+
+  return BGColor;
+}//end determineGradientColor
+
+function getContrastColor(hexcolor){
+  hexcolor = hexcolor.replace("#", "");
+  var r = parseInt(hexcolor.substr(0,2),16);
+  var g = parseInt(hexcolor.substr(2,2),16);
+  var b = parseInt(hexcolor.substr(4,2),16);
+  var yiq = ((r*299)+(g*587)+(b*114))/1000;
+  return (yiq >= 128) ? 'black' : 'white';
+}//end getContrastColor
+
+
 function putWritings(writings) {
   console.log("in putWritings()...");
 
@@ -919,8 +1010,12 @@ function putWritings(writings) {
     console.dir(writings[i].Date);
     console.log("writings[i].Author:");
     console.dir(writings[i].Author);
-    //and why isnt the big scrolling container being drawn?
-if ((writings[i].Author == nameEntered) || (nameEntered == "Mayev")) {//WANT TODO CHECK GROUP TOO EVENTUALLY
+
+    if (!writings[i].hasOwnProperty('Private')) {
+      writings[i].Private = false; // Default to not private if 'Private' does not exist
+    } 
+    //make divs for ALL the writings but ONLY
+    //display the writing entries IF they are from this user of IF they are not private
     console.log("found WRITING FOR Author: "+writings[i].Author);
 
     //create a div
@@ -934,7 +1029,7 @@ if ((writings[i].Author == nameEntered) || (nameEntered == "Mayev")) {//WANT TOD
     var locationSelect = writingItem.childNodes[1].childNodes[13].childNodes[1];
     var tempSelect = writingItem.childNodes[1].childNodes[5].childNodes[1];
     var weatherSelect = writingItem.childNodes[1].childNodes[7].childNodes[1];
-
+    var privateCheckbox = writingItem.querySelector('input[id="private-checkbox"]');
     var textArea = writingItem.childNodes[5];
 
     writingItem.setAttribute("id", writings[i]._id); //ad the writing ID to the newly cloned div
@@ -946,6 +1041,9 @@ if ((writings[i].Author == nameEntered) || (nameEntered == "Mayev")) {//WANT TOD
     SelectItemByValue(locationSelect, writings[i].Location); //set the location control
     SelectItemByValue(weatherSelect, writings[i].Weather);
     SelectItemByValue(tempSelect, writings[i].Temperature);
+    console.log("privateCheckbox.checked: " + privateCheckbox.checked )
+    privateCheckbox.checked = writings[i].Private; // Set the checkbox state ('Private' exists because we force created it above if it didn't)
+  
     textArea.innerHTML = writings[i].WritingContent; //set the writing content
 
     var sunPosDeg = getSunAlt(
@@ -957,11 +1055,30 @@ if ((writings[i].Author == nameEntered) || (nameEntered == "Mayev")) {//WANT TOD
     );
     console.log("sun altitude at this hour: " + sunPosDeg + "°");
 
-    //set the background image
-    writingItem.childNodes[1].childNodes[1].src = getBGImage(
+    var sunAndBG = getBGImage(
       sunPosDeg,
-      writings[i].Weather
+      weatherSelect.value
     );
+    //set the background image
+    writingItem.childNodes[1].childNodes[1].src = sunAndBG.ImgFileName;
+    //set the background color
+    //console.log ('sunAndBG: ');
+    //console.log (sunAndBG);
+    console.log ('putWritings() about to call updateCardGradient()...');
+
+    updateCardGradient(writingItem,sunAndBG.sunIndex);
+
+
+    if ((writings[i].Author == nameEntered) || (writings[i].Private == false) || (nameEntered == "Mayev")) {
+      //SHOW THE CARD
+      // If the current user is not the author, (AND not Mayev) disable the card
+      if ((writings[i].Author !== nameEntered) && (nameEntered !== "Mayev")) {
+        disableCard(writingItem);
+      } //if disable
+    }else{
+      //HIDE THE CARD
+      writingItem.classList.add("hide"); // Hide the card
+    }
 
     //Also update the default values
     defaultRec.Date = writings[i].Date;
@@ -969,7 +1086,6 @@ if ((writings[i].Author == nameEntered) || (nameEntered == "Mayev")) {//WANT TOD
     defaultRec.Location = writings[i].Location;
     defaultRec.Temperature = writings[i].Temperature;
     defaultRec.Weather = writings[i].Weather;
-    }//end if matching user!
   } //end for i
 
   if (cardList.childNodes[2]) {
@@ -984,6 +1100,8 @@ if ((writings[i].Author == nameEntered) || (nameEntered == "Mayev")) {//WANT TOD
 function updateWritings(divToUpdate, updateData) {
   console.log("in updateWritings() with updateData...");
   console.dir(updateData);
+  console.log("and div to update:");
+  console.dir(divToUpdate);
   //var sortNoSort = updateData.Sort;
   //var actualData = updateData.Data;
 
@@ -992,6 +1110,8 @@ function updateWritings(divToUpdate, updateData) {
   var locationSelect = divToUpdate.childNodes[1].childNodes[13].childNodes[1];
   var tempSelect = divToUpdate.childNodes[1].childNodes[5].childNodes[1];
   var weatherSelect = divToUpdate.childNodes[1].childNodes[7].childNodes[1];
+  var privateCheckbox = divToUpdate.querySelector('input[id="private-checkbox"]'); // Find it
+
 
   var textArea = divToUpdate.childNodes[5];
   var updateDATE = new Date(updateData.Date);
@@ -1003,6 +1123,7 @@ function updateWritings(divToUpdate, updateData) {
   textArea.innerHTML = updateData.WritingContent; //set the writing content
   SelectItemByValue(weatherSelect, updateData.Weather); //set Weather
   SelectItemByValue(tempSelect, updateData.Temperature); //set Temp
+  privateCheckbox.checked = updateData.Private; // Update the Private checkbox based on incoming data
   setCurrentCursorPosition(textArea, savedCursor);
   /*
     if (sortNoSort) {
@@ -1013,6 +1134,13 @@ function updateWritings(divToUpdate, updateData) {
     }
     */
   doMoonsAndSunsPerLocation();
+
+  // If the entry is getting marked as Private and the current user is not the author, (OR Mayev) hide the card
+  if (updateData.Private && updateData.Author !== nameEntered && updateData.Author !== 'Mayev') {
+    divToUpdate.classList.add("hide"); // Hide the card
+  } else {
+    divToUpdate.classList.remove("hide"); // Show the card (in case it was previously hidden)
+  }
 } //end updateWritings
 
 function newWriting(writingItem) {
@@ -1053,6 +1181,8 @@ function newWriting(writingItem) {
       writingItem.childNodes[1].childNodes[7].childNodes[1].value; //set the weather value
     defaultRec.Temperature =
       writingItem.childNodes[1].childNodes[5].childNodes[1].value; //set the temp value
+    defaultRec.Private = false;
+
     //end any child nodes
   }
 
@@ -1137,11 +1267,20 @@ function update(writingId, theField, theValue, theElement) {
       .Lon
     );
     console.log("sun altitude at this new hour: " + sunPosDeg + "°");
-    //set the background image
-    writingItem.childNodes[1].childNodes[1].src = getBGImage(
+
+    var sunAndBG = getBGImage(
       sunPosDeg,
       weatherSelect.value
     );
+    //set the background image
+    writingItem.childNodes[1].childNodes[1].src = sunAndBG.ImgFileName;
+    //set the background color
+    console.log ('sunAndBG: ');
+    console.log (sunAndBG);
+    //lastly let's update the colors for this card
+    console.log ('update() about to call updateCardGradient()...');
+
+    updateCardGradient(writingItem, sunAndBG.sunIndex)
   } //end if Time, Location or Weather
 
   var dataRec = {
@@ -1262,8 +1401,14 @@ function doMoonsAndSunsPerLocation() {
         lastLocation +
         "?"
       );
-      if (currentLocation != lastLocation) {
-        //This is first card of a new location!
+      var cardIsVisible = true; //init
+      if (thisWritingEntry.classList.contains('hide')) {//set a temp variable to the visibility because we don;t want to draw moons and suns on invisble cards
+            cardIsVisible = false;
+          } else {
+            cardIsVisible = true;
+          }
+      if (currentLocation != lastLocation && cardIsVisible) {
+        //This is first visible card of a new location!
         //need to call doMoon() & doSun() on this
         console.log(
           "••YES•• doMoonsAndSunsPerLocation is about to call doMoon() with start card:" +
@@ -1273,8 +1418,10 @@ function doMoonsAndSunsPerLocation() {
         doSun(thisWritingEntry, i);
         lastLocation = currentLocation; //save this new location for next iteration
       } //end if new location
+
     } //end else thisWritingEntry actually exists
   } //end for i
+
 
   return 1; //ended normally
 } //end doMoonsAndSunsPerLocation()
@@ -1355,9 +1502,9 @@ function findBestCardFor(eventType, eventTime, startCard) {
     var nextWritingEntry = cardList.childNodes[i + 1];
 
     console.log("when i=" + i);
-    console.log("thisWritingEntry: ");
+    console.log("p2 thisWritingEntry: ");
     console.dir(thisWritingEntry);
-    console.log("nextWritingEntry: ");
+    console.log("p2 nextWritingEntry: ");
     console.dir(nextWritingEntry);
 
     //IF THERE IS EVEN A WRITING ENTRY HERE THE DO SOME SETUP
@@ -1389,6 +1536,182 @@ function findBestCardFor(eventType, eventTime, startCard) {
   console.log("WHY I are about to return null?????????");
   return null;
 } //end findBestCardFor
+
+function findBestVisibleCardFor(eventType, eventTime, startCard) {
+  //this thing returns the index of the best writing entry card to display a thing (like moonrise) that happens at a given hour
+  //now that we're factoring in locations, we'll need to adjust to handle that
+  //ALSO we now only count VISIBLE cards not "hide" cards
+  console.log("in findBestVisibleCardFor() with: ");
+  console.log("   eventType: " + eventType);
+  console.log("   eventTime: " + eventTime);
+  console.log("   startCard: " + startCard);
+
+  //this assumes the records are sorted by LOCATION and then by TIME
+  var originalLocation = "init";
+  var lastOfTheLocation = startCard; //init to startCrad for now
+
+  //FIRST PASS DOWN LIST to ERASE old rise & set notes of this type
+  //AND to identify the end of this location
+  for (var j = startCard; j < cardList.childNodes.length; j++) {
+    var thisWritingEntry = cardList.childNodes[j];
+    var nextWritingEntry = cardList.childNodes[j + 1];
+
+    console.log("when j=" + j);
+    console.log("thisWritingEntry: ");
+    console.dir(thisWritingEntry);
+    console.log("nextWritingEntry: ");
+    console.dir(nextWritingEntry);
+
+    var cardIsVisible = false;//init
+    var nextCardIsVisible = false;//init
+
+
+    if (typeof thisWritingEntry != "undefined") {//if there even IS a card at all check if it's visible
+  
+      if (thisWritingEntry.classList.contains('hide')) {
+        cardIsVisible = false;
+        console.log("card j=" + j +" is not visible");
+        } else {
+        cardIsVisible = true;
+        console.log("card j=" + j +" IS visible");
+      }
+
+    }//there is a writing entry
+
+    if (typeof nextWritingEntry != "undefined") { //if there even IS a next card at all check if it's visible
+      if (nextWritingEntry.classList.contains('hide')) {
+        nextCardIsVisible = false;
+        console.log("next card of  j=" + j +" is not visible");
+        } else {
+        nextCardIsVisible = true;
+        console.log("next card of  j=" + j +" IS visible");
+        }
+    }//there is a next writing entry
+
+    console.log("nextCardIsVisible: "+ nextCardIsVisible);
+
+
+    if(cardIsVisible) {
+      lastOfTheLocation = j; //keep saving every j we visit for visible cards while the location is the same
+    }
+
+    if (cardIsVisible) { //IF THERE IS EVEN A VISIBLE WRITING ENTRY HERE THE DO SOME SETUP
+
+      var thisTimeSelect =
+        thisWritingEntry.childNodes[1].childNodes[9].childNodes[1];
+      var thisLocationSelect =
+        thisWritingEntry.childNodes[1].childNodes[13].childNodes[1];
+      if (originalLocation == "init") {
+        originalLocation = thisLocationSelect.value;
+      }
+      //Clear any rise or set notes of our type out
+      if (eventType == "moonrise") {
+        thisWritingEntry.querySelector(".sunMoon").childNodes[3].innerHTML = ""; //3 is moonRise - clear current contents
+      } else if (eventType == "moonset") {
+        thisWritingEntry.querySelector(".sunMoon").childNodes[5].innerHTML = ""; //5 is moonSet - clear current contents
+      } else if (eventType == "sunrise") {
+        thisWritingEntry.querySelector(".sunMoon").childNodes[7].innerHTML = ""; //7 is sunRise - clear current contents
+      } else if (eventType == "sunset") {
+        thisWritingEntry.querySelector(".sunMoon").childNodes[9].innerHTML = ""; //9 is sunSet - clear current contents
+      } // end clearing the current type of old event notes
+    } //end there is a this writing entry
+
+    if (nextCardIsVisible) {    //IF THERE IS A NEXT WRITING ENTRY AT ALL THEN DO SOME SETUP
+
+      var nextLocationSelect =
+        nextWritingEntry.childNodes[1].childNodes[13].childNodes[1];
+      console.log("nextLocationSelect.value: " + nextLocationSelect.value);
+    }
+    console.log("originalLocation: " + originalLocation);
+
+    if (
+      typeof nextWritingEntry == "undefined" ||
+      nextLocationSelect.value != originalLocation || !nextCardIsVisible
+    ) {
+      console.log(
+        "nextWritingEntry is UNDEFINED or different location or hidden, so going to SAVE this END OF LOCATION spot (" +
+        lastOfTheLocation +
+        ")"
+      );
+      break; //bad form BUT we can't go on counting up j's if the location has changed!
+    } //end if reached an undefined or a change in location
+  } //end for - move on to the next card!
+
+  //console.log("length = "+cardList.childNodes.length);
+  //we're only looking at the odd numbered children (which are the actual cards)
+  //AND we're gonna start from 3 so we skip the template
+  for (var i = startCard; i <= lastOfTheLocation; i++) {
+    var thisWritingEntry = cardList.childNodes[i];
+    var nextWritingEntry = cardList.childNodes[i + 1];
+
+    var cardIsVisible = false;//init
+    var nextCardIsVisible = false;//init
+
+    if (typeof thisWritingEntry != "undefined") {//if there even IS a card at all check if it's visible
+
+      var cardIsVisible = false;//init
+  
+      if (thisWritingEntry.classList.contains('hide')) {
+        cardIsVisible = false;
+        console.log("pass2 card i=" + i +" is not visible");
+        } else {
+        cardIsVisible = true;
+        console.log("pass2 card i=" + i +" IS visible");
+      }
+
+    }//there is a writing entry
+
+    if (typeof nextWritingEntry != "undefined") { //if there even IS a next card at all check if it's visible
+
+      var nextCardIsVisible = false;//init
+
+    if (nextWritingEntry.classList.contains('hide')) {
+      nextCardIsVisible = false;
+      console.log("pass2 next card of  i=" + i +" is not visible");
+      console.log("nextCardIsVisible: "+ nextCardIsVisible);
+      } else {
+      nextCardIsVisible = true; 
+      console.log("pass2 next card of  i=" + i +" is not visible");
+      console.log("nextCardIsVisible: "+ nextCardIsVisible);
+    }
+    }//there is a next writing entry
+
+    console.log("when i=" + i);
+    console.log("p2 thisWritingEntry: ");
+    console.dir(thisWritingEntry);
+    console.log("p2 nextWritingEntry: ");
+    console.dir(nextWritingEntry);
+
+    if (cardIsVisible) {    //IF THERE IS EVEN A VISIBLE WRITING ENTRY HERE THE DO SOME SETUP
+      var thisTimeSelect =
+        thisWritingEntry.childNodes[1].childNodes[9].childNodes[1];
+    } //end there is a this writing entry
+
+    if (nextCardIsVisible) {    //IF THERE IS A NEXT WRITING ENTRY AT ALL THEN DO SOME SETUP
+      var nextTimeSelect =
+        nextWritingEntry.childNodes[1].childNodes[9].childNodes[1];
+    }
+
+    if (typeof nextWritingEntry == "undefined" || i == lastOfTheLocation || !nextCardIsVisible) {
+      return i; //reached a last card so this must be the spot!
+    } else if (Number(nextTimeSelect.value) > eventTime) {
+      console.log(
+        "nextTimeSelect.VALUE (" +
+        nextTimeSelect.value +
+        ") is > hour (" +
+        eventTime +
+        ")..."
+      );
+      console.log("so going to return this writing entry (" + i + ")");
+      return i;
+    }
+  } //end for - move on to the next card!
+  console.log("WHY I are about to return null?????????");
+  return null;
+} //end findBestVisibleCardFor()
+
+
+
 
 function getMoonPhase(year, month, day) {
   var c = (e = jd = b = 0);
@@ -1518,11 +1841,11 @@ function doMoon(writing, cardNumb) {
 
   console.log(
     "Best Card for moon Rise is: " +
-    findBestCardFor("moonrise", moonRec.rise.hours, cardNumb)
+    findBestVisibleCardFor("moonrise", moonRec.rise.hours, cardNumb)
   );
   console.log(
     "Best Card for moon Set is: " +
-    findBestCardFor("moonset", moonRec.set.hours, cardNumb)
+    findBestVisibleCardFor("moonset", moonRec.set.hours, cardNumb)
   );
 
   //find Phase
@@ -1531,7 +1854,7 @@ function doMoon(writing, cardNumb) {
   moonImg.onload = function () {
     //console.log("I'M FO REAL RISE!!!!!!!!!!!!!!!!!!!")
     cardList.childNodes[
-        findBestCardFor("moonrise", moonRec.rise.hours, cardNumb)
+      findBestVisibleCardFor("moonrise", moonRec.rise.hours, cardNumb)
       ].childNodes[3].childNodes[3].innerHTML =
       "moonrise " +
       moonRise12H +
@@ -1543,7 +1866,7 @@ function doMoon(writing, cardNumb) {
       ".png' alt='moon' height='15' width='15'>";
     //console.log("I'M FO REAL SET!!!!!!!!!!!!!!!!!!!")
     cardList.childNodes[
-        findBestCardFor("moonset", moonRec.set.hours, cardNumb)
+      findBestVisibleCardFor("moonset", moonRec.set.hours, cardNumb)
       ].childNodes[3].childNodes[5].innerHTML =
       "moonset " +
       moonSet12H +
@@ -1650,23 +1973,23 @@ function doSun(writing, cardNumb) {
 
   console.log(
     "Best card for sun Rise is: " +
-    findBestCardFor("sunrise", sunRec.rise.hours, cardNumb)
+    findBestVisibleCardFor("sunrise", sunRec.rise.hours, cardNumb)
   );
   console.log(
     "Best card for sun Set is: " +
-    findBestCardFor("sunset", sunRec.set.hours, cardNumb)
+    findBestVisibleCardFor("sunset", sunRec.set.hours, cardNumb)
   );
 
   //post them to a note area
 
   //console.log("I'M FO REAL SUNRISE!!!!!!!!!!!!!!!!!!!")
   cardList.childNodes[
-      findBestCardFor("sunrise", sunRec.rise.hours, cardNumb)
+    findBestVisibleCardFor("sunrise", sunRec.rise.hours, cardNumb)
     ].childNodes[3].childNodes[7].innerHTML =
     "sunrise " + sunRise12H + ":" + sunRiseMinString + sunRiseAMPM;
   //console.log("I'M FO REAL SUNSET!!!!!!!!!!!!!!!!!!!")
   cardList.childNodes[
-      findBestCardFor("sunset", sunRec.set.hours, cardNumb)
+    findBestVisibleCardFor("sunset", sunRec.set.hours, cardNumb)
     ].childNodes[3].childNodes[9].innerHTML =
     "sunset " + sunSet12H + ":" + sunSetMinString + sunSetAMPM;
 } //end doSun
@@ -2498,6 +2821,7 @@ function find_sun_and_twi_events_for_date(mjd, tz, glong, glat) {
   } // end of for loop - next condition (next SunEvent)
 
   //return outstring;
+  sunn = sunRec;
   return sunRec;
 } //end sun
 
@@ -2649,6 +2973,8 @@ function getSunAlt(inDate, Lat, Lon) {
   var cglat = Math.cos(rad * Lat);
 
   var sunRec = find_sun_and_twi_events_for_date(MJD, thisTimeZone, Lon, Lat);
+  //console.log('%c HEY sunRec: ', "color: green;");
+  //console.log(sunRec);
 
   var sinOfAlt = sin_alt(2, otherDate, dateHour, Lon, cglat, sglat);
   var altRad = Math.asin(sinOfAlt); //in radians?
@@ -2673,15 +2999,15 @@ function getSunAlt(inDate, Lat, Lon) {
       Lon
     );
     console.log(
-      OLDfind_sun_and_twi_events_for_date(MJD, thisTimeZone, Lon, Lat)
+      OLDfind_sun_and_twi_events_for_date(MJD, thisTimeZone, Lon, Lat, )
     );
-    console.log("MJD: " + MJD);
-    console.log("otherDate: " + otherDate);
-    console.log("sglat: " + sglat);
-    console.log("cglat: " + cglat);
-    console.log("sinOfAlt: " + sinOfAlt);
-    console.log("altRad: " + altRad);
-    console.log("SO - sun altitude at this hour: " + altDeg + "°");
+    //console.log("MJD: " + MJD);
+    //console.log("otherDate: " + otherDate);
+    //console.log("sglat: " + sglat);
+    //console.log("cglat: " + cglat);
+    //console.log("sinOfAlt: " + sinOfAlt);
+    //console.log("altRad: " + altRad);
+    //console.log("SO - sun altitude at this hour: " + altDeg + "°");
   } //end DBuggins
   return altDeg;
 } //end getSunAlt()

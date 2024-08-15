@@ -136,12 +136,11 @@
                 <option value="Snow">Snow</option>
                 <option value="Sleet">Sleet</option>
               </select>
-              <p>
-                <label>
-                  <input type="checkbox" class="filled-in" checked="checked" />
-                  <span>Private</span>
-                </label>
-              </p>
+              <label for="private-checkbox" class="checkbox-label">
+                <input type="checkbox" id="private-checkbox" class="browser-default" checked="checked" onchange="updateCheckboxHandler(this)" />
+                Private
+              </label>
+              
             </div>
             <div
               class="selectPulldowns col s3 daytime"
