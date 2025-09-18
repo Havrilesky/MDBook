@@ -220,39 +220,22 @@ const locationsList = {
   }
 };
 //
-const authorsList = {
-  Steff: "Steff",
-  Kiedis: "Kiedis",
-  Aurvan: "Aurvan",
-  Kilmoor: "Kilmoor",
-  Orneh: "Orneh",
-  Jessen: "Jessen",
-  Ahatma: "Ahatma",
-  Mayev: "Mayev",
-  Galovia: "Galovia",
-  Aebeth: "Aebeth",
-  Faeriss: "Faeriss",
-  Zirétha: "Zirétha",
-  Elohandria: "Elohandria",
-  Tehya: "Tehya",
-  Roquesse: "Roquesse",
-  Egijebus: "Egijebus"
-};
 
 
 const authorsListNew = {
+  Echo: {Value:"Echo", Disable: false},
   Fern: {Value:"Fern", Disable: false},
-  Twigs: {Value:"Twigs", Disable: false},
+  Twigs: {Value:"Twigs", Disable: true},
   Aurvan: {Value: "Aurvan", Disable: false},
   Kilmoor: {Value: "Kilmoor", Disable: false},
   Mayev: {Value: "Mayev", Disable: false},
-  Galovia: {Value: "Galovia", Disable: false},
+  Galovia: {Value: "Galovia", Disable: true},
   Aebeth: {Value: "Aebeth", Disable: false},
   Kiedis: {Value: "Kiedis", Disable: false},
   Faeriss: {Value: "Faeriss", Disable: false},
   Zirétha: {Value: "Zirétha", Disable: true},
   Elohandria: {Value: "Elohandria", Disable: true},
-  Tehya: {Value: "Tehya", Disable: false},
+  Tehya: {Value: "Tehya", Disable: true},
   Roquesse: {Value: "Roquesse", Disable: true},
   Ahatma: {Value: "Ahatma", Disable: true},
   Thorne: {Value: "Thorne", Disable: false},
@@ -260,6 +243,8 @@ const authorsListNew = {
   Orneh: {Value: "Orneh", Disable: true},
   Jessen: {Value: "Jessen", Disable: true},
   Steff: {Value:"Steff", Disable: true},
+  Vexeter: {Value:"Vexeter", Disable: false},
+  Rustvane: {Value:"Rustvane", Disable: false},
   Egijebus: {Value: "Egijebus", Disable: true}
 };
 
@@ -270,10 +255,12 @@ const kennyLoggins = [
   {name:"Aurvan", ass:"buttertops"},
   {name:"Kilmoor", ass:"lamentation"},
   {name:"Fern", ass:"threadmoss"},
-  {name:"Twigs", ass:"pryholt"},
   {name:"Faeriss", ass:"sokatoa"},
   {name:"Thorne", ass:"mayaheine"},
   {name:"Meadquasher", ass:"pelor"},
+  {name:"Echo", ass:"sheep"},
+  {name:"Vexeter", ass:"coven"},
+  {name:"Rustvane", ass:"witch"},
   {name:"Roquesse", ass:"uniqua"}
 ];
 
@@ -629,6 +616,7 @@ function updateCheckboxHandler(checkbox) {
   update(cardId, 'Private', checkbox.checked);
 }
 
+
 function populateSelect(selector, options, type) {
   console.log("populating ");
   console.dir(selector);
@@ -652,7 +640,8 @@ function populateSelect(selector, options, type) {
   $("select").formSelect(); //to force an update of the selectors
 } // end populateSelect
 
-function populateSelectNew(selector, options, type) {
+
+function populateAuthor(selector, options, type) {
   console.log("populating new-style ");
   console.dir(selector);
 
@@ -675,7 +664,9 @@ function populateSelectNew(selector, options, type) {
   selector.setAttribute("value", type);
   selector.onchange = saveWriting; ///I don't think this is correct anymore
   $("select").formSelect(); //to force an update of the selectors
-} // end populateSelect
+} // end populateAuthor
+
+
 
 
 
@@ -702,9 +693,13 @@ async function startSetUp() {
 //AMAZON server version for prod (SWITCH BEFORE DEPLOYMENT!)
 //BUT BE SURE this URL is accurate for your (new?) AWS thingy!  just keep the 8090 Port in there!
 
-  theSock = await new WebSocket(
-    "ws://ec2-3-19-141-227.us-east-2.compute.amazonaws.com:8090"
-  );
+//  theSock = await new WebSocket(
+//    "ws://ec2-3-19-141-227.us-east-2.compute.amazonaws.com:8090"
+//  );
+
+//NEW 2025 - here's the way to do it for Koyeb:
+const wsProto = (location.protocol === 'https:') ? 'wss' : 'ws';
+theSock = await new WebSocket(`${wsProto}://${location.host}/ws`);
 
 
 
@@ -786,7 +781,7 @@ function continueSetUp() {
   //set up writing control panel
   console.dir(timeSelect);
   populateSelect(timeSelect, hoursList, "hour");
-  populateSelectNew(authorSelect, authorsListNew, "author");
+  populateAuthor(authorSelect, authorsListNew, "author");
   //populateSelect(authorSelect, authorsList, "author");
   populateSelect(locationSelect, locationsList, "location");
 

@@ -4,7 +4,8 @@
 var express = require('express');
 var path = require('path');
 
-var ws = require('ws')
+const http = require('http');
+const ws = require('ws');
 var mongoose = require('mongoose');
 var ObjectId = require('mongoose').Types.ObjectId;
 require('mongoose').set('debug', true);
@@ -17,6 +18,7 @@ var bodyParser = require('body-parser');
 //var users = require('./routes/users');
 
 var app = express();
+const server = http.createServer(app);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -164,10 +166,14 @@ Assignment.findOne(function (err, doc) {
 //"NEW", "DELETE", "SAVE",
 var clients = [];
 
-var WebSocketServer = require('ws').Server,
+//old way with sock on 8090
+/*var WebSocketServer = require('ws').Server,
     wss = new WebSocketServer({
         port: 8090
     });
+*/
+
+const wss = new ws.Server({ server, path: '/ws' });
 
 wss.on('connection', function (ws) {
 
@@ -413,6 +419,13 @@ app.use(function (err, req, res, next) {
 
 module.exports = app;
 
-app.listen(3000, function () {
-    console.log('Server listening on port 3000!');
+// OLD
+// app.listen(3000, function () {
+//   console.log('Server listening on port 3000!');
+// });
+
+// NEW
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, function () {
+  console.log(`Server listening on port ${PORT}!`);
 });
