@@ -303,6 +303,9 @@ var footerArea = document.getElementById("footerArea");
 
 var sunn = null;
 
+var PING_INTERVAL = 60000;  // 1 minute
+var lastPongAt = 0;
+
 ///////////////////////GROUP SHIT///////////////////////////////////////////////////////////////////////
 function changeGroup() {
   console.log("in changeGroup()...");
@@ -319,16 +322,16 @@ function doLoggins(shit) {
     return obj.name === nameEntered
   })
   if (passEntered == userRec.ass) {
-    console.log("Good shit, "+nameEntered);
+    console.log("Good job, "+nameEntered);
     loggedIn.innerHTML = "Logged in as "+nameEntered;
     loginName.innerHTML = "";
     loginPass.innerHTML = "";
 
   } else {
-    console.log("BAD shit, "+nameEntered);
-    alert("Loggins failed! (Highway to the danger zone)")
+    console.log("BAD Loggins, "+nameEntered);
+    alert("Loggins failed! (code:666 - highway to the danger zone)")
     nameEntered = "nobody";
-    loggedIn.innerHTML = "You're not logged in, dumbass!";
+    loggedIn.innerHTML = "You're still not logged in, dumbass!";
   }
 
 }
@@ -336,50 +339,44 @@ function doLoggins(shit) {
 
 ///////////////////////WEBSOCKET PING CHECKER///////////////////////////////////////////////////////////////////////
 
-//var ponged = false;
-
 var pinger = setInterval(function() {
   console.log("checking the sock...");
 
-  if (theSock.readyState != WebSocket.OPEN) {
+  if (!theSock || theSock.readyState !== WebSocket.OPEN) {
     console.log("the sock is not open!");
 
-    //Set up alert state!!
+    // UI: alert state
     topNav.classList.remove("brown");
     footerArea.classList.remove("brown");
-    loggedIn.innerHTML = "DISCONNECTED!!"
+    loggedIn.innerHTML = "DISCONNECTED!!";
     topNav.classList.add("red");
     footerArea.classList.add("red");
+    return;
   }
 
-/*
-  //alert("pinger every 5s")
-  if (!ponged) {
-    //uh oh never got a PONG after the last PING!
-    //Set up alert state!!
-
-
-
+  // send app-level PING (server replies with PONG)
+  try {
+    var pingMsg = JSON.stringify({ Command: "PING", Data: null });
+    theSock.send(pingMsg);
+  } catch (e) {
+    console.warn("PING send failed; treating as disconnected", e);
+    try { theSock.close(); } catch (_) {}
+    return;
   }
-  console.log("sending PING...");
-  ponged = false;//if the sock returns a PONG this will get set back to true
-    //send the PING message to theSock (WebSocket Server)
 
-    var newWSMessage = {
-      Command: "LASTDATE",
-      Data: theDate
-    };
-    */
-/*
-  var newWSMessage = {
-    Command: "PING",
-    Data: null
-  };
+  // if we miss 2 PONGs in a row, mark disconnected (and you can force a reconnect here)
+  if (lastPongAt && (Date.now() - lastPongAt > (2 * PING_INTERVAL + 2000))) {
+    console.warn("No PONG recently — marking as disconnected");
+    topNav.classList.remove("brown");
+    footerArea.classList.remove("brown");
+    loggedIn.innerHTML = "DISCONNECTED!!";
+    topNav.classList.add("red");
+    footerArea.classList.add("red");
 
-  var JSONMess = JSON.stringify(newWSMessage);
-  theSock.send(JSONMess);
- */
-}, 120000);
+    // optional: force a reconnect if you add an onclose() that recreates the socket
+    // try { theSock.close(); } catch (_){}
+  }
+}, PING_INTERVAL);
 
 
 
@@ -703,14 +700,17 @@ theSock = await new WebSocket(`${wsProto}://${location.host}/ws`);
 
 
 
-  theSock.onopen = function () {
-    console.log("websocket is connected ...");
-    topNav.classList.remove("red");
-    footerArea.classList.remove("red");
+theSock.onopen = function () {
+  console.log("websocket is connected ...");
+  topNav.classList.remove("red");
+  footerArea.classList.remove("red");
+  topNav.classList.add("brown");
+  footerArea.classList.add("brown");
 
-    topNav.classList.add("brown");
-    footerArea.classList.add("brown");
-  };
+  lastPongAt = Date.now();   // <— mark pong timer as “fresh” on opening
+};
+
+
   theSock.onmessage = function (ev) {
     console.log(ev);
     var coreMess = JSON.parse(ev.data);
@@ -752,7 +752,8 @@ theSock = await new WebSocket(`${wsProto}://${location.host}/ws`);
       //end DATE
     } else if (coreMess.Command == "PONG") {
       console.log("got PONG");
-      ponged = true;
+      lastPongAt = Date.now();   // <— update freshness of pong timer
+      ponged = true;             // my not be used any longer?
 
       //END PONG
     }

@@ -177,29 +177,58 @@ const wss = new ws.Server({ server, path: '/ws' });
 
 wss.on('connection', function (ws) {
 
+    // --- protocol heartbeat markers ---
+    ws.isAlive = true;
+    ws.on('pong', function () { ws.isAlive = true; });
+    // ----------------------------------
 
     var index = clients.push(ws) - 1;
     console.log("setting client index: " + index);
 
-
-
-    console.log("About to get last date and send to client..."); // want to show them the latest date so we have to send//////////
-    lastDate.findOne({}, function (err, dateRec) {
-
-        if (err) {
-            console.error('GET LAST DATE ERROR!');
-        } else {
-            //SEND BACK TO CLIENT
-            console.log('Now About to "DATE" back to client with:');
-            console.dir(dateRec._doc);
-            var newWSMessage = {
-                "Command": "DATE",
-                "Data": [dateRec._doc]
-            };
-            var outMessJson = JSON.stringify(newWSMessage);
-            ws.send(outMessJson);
-        }; //end else
+    // --- ADD: per-connection close handler (safe removal) ---
+    ws.on('close', function (code, reason) {
+        var peer = (ws._socket && ws._socket.remoteAddress) ? ws._socket.remoteAddress : 'unknown';
+        console.log((new Date()) + " Client (index:" + index + "): " + peer + " disconnected. code: " + code);
+        // remove THIS socket (indices can shift)
+        var i = clients.indexOf(ws);
+        if (i !== -1) clients.splice(i, 1);
     });
+    // --------------------------------------------------------
+
+    console.log("About to get last date and send to client...");
+    lastDate.findOne({}, function (err, dateRec) {
+        if (err) {
+        console.error('GET LAST DATE ERROR!');
+        } else if (dateRec && dateRec._doc) {
+        console.log('Now About to "DATE" back to client with:');
+        console.dir(dateRec._doc);
+        var newWSMessage = { "Command": "DATE", "Data": [dateRec._doc] };
+        var outMessJson = JSON.stringify(newWSMessage);
+        ws.send(outMessJson);
+        }
+    });//End on connection
+
+
+
+    // --- ADD: global protocol heartbeat interval (60s) ---
+    var heartbeatInterval = setInterval(function () {
+    wss.clients.forEach(function (socket) {
+        if (socket.isAlive === false) {
+        try { socket.terminate(); } catch (e) {}
+        return;
+        }
+        socket.isAlive = false;      // will be set true by the 'pong' listener
+        try { socket.ping(); } catch (e) {}
+    });
+    }, 60000);
+
+    wss.on('close', function () {
+    clearInterval(heartbeatInterval);
+    });
+    // ------------------------------------------------------
+
+
+
 
     ws.on('message', async function (message) { ///handle messages////////////////////////
 
@@ -355,17 +384,6 @@ Date:{
             clients[index].send(outMessJson);
         };//END PING
 
-        ws.on('close', function (ws) {
-            console.log((new Date()) + " Client (index:" + index + "): " + ws.remoteAddress + " disconnected.");
-            // remove user from the list of connected clients
-            clients.splice(index, 1);
-        }); //end close connection
-
-
-        //setInterval(
-        //  () => ws.send(`${new Date()}`),
-        //  1000
-        //));
     });
 });
 
