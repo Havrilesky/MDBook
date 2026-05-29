@@ -245,9 +245,9 @@ const authorsListNew = {
   Steff: {Value:"Steff", Disable: true},
   Vexeter: {Value:"Vexeter", Disable: false},
   Rustvane: {Value:"Rustvane", Disable: false},
-  Winifred: {Value:”Winifred”, Disable: false},
-  Faelith: {Value:”Faelith", Disable: false},
-  Elaris: {Value:”Elaris”, Disable: false},
+Winifred: {Value:"Winifred", Disable: false},
+Faelith: {Value:"Faelith", Disable: false},
+Elaris: {Value:"Elaris", Disable: false},
   Egijebus: {Value: "Egijebus", Disable: true}
 };
 
@@ -264,9 +264,9 @@ const kennyLoggins = [
   {name:"Echo", ass:"sheep"},
   {name:"Vexeter", ass:"coven"},
   {name:"Rustvane", ass:"witch"},
-  {name:”Winifred”, ass:”pellet”},
-  {name:”Faelith, ass:”green”},
-  {name:”Elaris”, ass:”dusk”},
+  {name:"Winifred", ass:"pellet"},
+  {name:"Faelith", ass:"green"},
+  {name:"Elaris", ass:"dusk"},
   {name:"Roquesse", ass:"uniqua"}
 ];
 
