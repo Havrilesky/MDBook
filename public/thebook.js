@@ -223,7 +223,7 @@ const locationsList = {
 
 
 const authorsListNew = {
-  Echo: {Value:"Echo", Disable: false},
+  Echo: {Value:"Echo", Disable: true},
   Fern: {Value:"Fern", Disable: false},
   Twigs: {Value:"Twigs", Disable: true},
   Aurvan: {Value: "Aurvan", Disable: false},
@@ -245,6 +245,9 @@ const authorsListNew = {
   Steff: {Value:"Steff", Disable: true},
   Vexeter: {Value:"Vexeter", Disable: false},
   Rustvane: {Value:"Rustvane", Disable: false},
+  ”Winifred”: {Value:"”Winifred”", Disable: false},
+  ”Faelith: {Value:"”Faelith", Disable: false},
+  ”Elaris”: {Value:"”Elaris”", Disable: false},
   Egijebus: {Value: "Egijebus", Disable: true}
 };
 
