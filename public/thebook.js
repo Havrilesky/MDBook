@@ -261,6 +261,9 @@ const kennyLoggins = [
   {name:"Echo", ass:"sheep"},
   {name:"Vexeter", ass:"coven"},
   {name:"Rustvane", ass:"witch"},
+  {name:”Winifred”, ass:”pellet”},
+  {name:”Faelith, ass:”green”},
+  {name:”Elaris”, ass:”dusk”},
   {name:"Roquesse", ass:"uniqua"}
 ];
 
