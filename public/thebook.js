@@ -245,9 +245,9 @@ const authorsListNew = {
   Steff: {Value:"Steff", Disable: true},
   Vexeter: {Value:"Vexeter", Disable: false},
   Rustvane: {Value:"Rustvane", Disable: false},
-  ”Winifred”: {Value:"”Winifred”", Disable: false},
-  ”Faelith: {Value:"”Faelith", Disable: false},
-  ”Elaris”: {Value:"”Elaris”", Disable: false},
+  Winifred: {Value:”Winifred”, Disable: false},
+  Faelith: {Value:”Faelith", Disable: false},
+  Elaris: {Value:”Elaris”, Disable: false},
   Egijebus: {Value: "Egijebus", Disable: true}
 };
 
