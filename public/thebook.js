@@ -224,15 +224,18 @@ const locationsList = {
 
 const authorsListNew = {
   Echo: {Value:"Echo", Disable: true},
-  Fern: {Value:"Fern", Disable: false},
+  Fern: {Value:"Fern", Disable: true},
+  Naivara: {Value:"Naivara", Disable: false},
+  Fael: {Value:"Fael", Disable: false},
+  Nazriya: {Value:"Nazriya", Disable: false},
   Twigs: {Value:"Twigs", Disable: true},
   Aurvan: {Value: "Aurvan", Disable: false},
   Kilmoor: {Value: "Kilmoor", Disable: false},
   Mayev: {Value: "Mayev", Disable: false},
   Galovia: {Value: "Galovia", Disable: true},
-  Aebeth: {Value: "Aebeth", Disable: false},
+  Aebeth: {Value: "Aebeth", Disable: true},
   Kiedis: {Value: "Kiedis", Disable: false},
-  Faeriss: {Value: "Faeriss", Disable: false},
+  Faeriss: {Value: "Faeriss", Disable: true},
   Zirétha: {Value: "Zirétha", Disable: true},
   Elohandria: {Value: "Elohandria", Disable: true},
   Tehya: {Value: "Tehya", Disable: true},
@@ -267,6 +270,9 @@ const kennyLoggins = [
   {name:"Winifred", ass:"pellet"},
   {name:"Faelith", ass:"green"},
   {name:"Elaris", ass:"dusk"},
+  {name:"Naivara", ass:"emerald"},
+  {name:"Fael", ass:"trouble"},
+  {name:"Nazriya", ass:"ifrit"},
   {name:"Roquesse", ass:"uniqua"}
 ];
 
